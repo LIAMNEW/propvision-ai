@@ -51,6 +51,9 @@ import Alerts from './pages/Alerts';
 import Discover from './pages/Discover';
 import Portfolio from './pages/Portfolio';
 import Suburbs from './pages/Suburbs';
+import Intelligence from './pages/Intelligence';
+import Map from './pages/Map';
+import Settings from './pages/Settings';
 import __Layout from './Layout.jsx';
 
 
@@ -59,6 +62,9 @@ export const PAGES = {
     "Discover": Discover,
     "Portfolio": Portfolio,
     "Suburbs": Suburbs,
+    "Intelligence": Intelligence,
+    "Map": Map,
+    "Settings": Settings,
 }
 
 export const pagesConfig = {
