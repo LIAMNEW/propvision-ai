@@ -1,120 +1,167 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { createPageUrl } from "@/utils";
-import {
-  Search, Compass, MapPin, Briefcase, Bell,
-  ChevronLeft, ChevronRight, TrendingUp, LogOut, Menu, X
-} from "lucide-react";
 import { base44 } from "@/api/base44Client";
+import { useQuery } from "@tanstack/react-query";
+import {
+  Compass, LineChart, Map, MapPin, Briefcase, Bell, Settings as SettingsIcon,
+  LogOut, User as UserIcon, TrendingUp
+} from "lucide-react";
+import {
+  DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator
+} from "@/components/ui/dropdown-menu";
 
 const NAV_ITEMS = [
   { name: "Discover", icon: Compass, page: "Discover" },
+  { name: "Intelligence", icon: LineChart, page: "Intelligence" },
+  { name: "Map", icon: Map, page: "Map" },
   { name: "Suburbs", icon: MapPin, page: "Suburbs" },
   { name: "Portfolio", icon: Briefcase, page: "Portfolio" },
   { name: "Alerts", icon: Bell, page: "Alerts" },
 ];
 
 export default function Layout({ children, currentPageName }) {
-  const [collapsed, setCollapsed] = useState(false);
-  const [mobileOpen, setMobileOpen] = useState(false);
+  const navigate = useNavigate();
+  const [user, setUser] = useState(null);
+
+  const { data: alerts = [] } = useQuery({
+    queryKey: ["alerts"],
+    queryFn: () => base44.entities.MarketAlert.list("-created_date", 100),
+  });
+
+  const unreadCount = alerts.filter((a) => !a.is_read).length;
+
+  useEffect(() => {
+    base44.auth.me().then(setUser).catch(() => setUser(null));
+  }, []);
+
+  const handleLogout = async () => {
+    await base44.auth.logout();
+  };
 
   return (
-    <div className="flex h-screen overflow-hidden" style={{ background: "#050810" }}>
-      {/* Mobile overlay */}
-      {mobileOpen && (
-        <div
-          className="fixed inset-0 bg-black/60 z-40 lg:hidden"
-          onClick={() => setMobileOpen(false)}
-        />
-      )}
-
-      {/* Sidebar */}
-      <aside
-        className={`
-          fixed lg:relative z-50 h-full flex flex-col
-          transition-all duration-300 ease-in-out
-          ${collapsed ? "lg:w-20" : "lg:w-64"}
-          ${mobileOpen ? "w-64 translate-x-0" : "-translate-x-full lg:translate-x-0"}
-        `}
+    <div className="flex flex-col h-screen" style={{ background: "#050810" }}>
+      {/* Top Nav */}
+      <header
+        className="h-16 border-b flex items-center px-6"
         style={{
-          background: "rgba(255,255,255,0.02)",
-          borderRight: "1px solid rgba(255,255,255,0.06)",
+          background: "rgba(13,18,35,0.85)",
+          backdropFilter: "blur(16px)",
+          borderColor: "rgba(255,255,255,0.06)",
         }}
       >
-        {/* Logo */}
-        <div className="flex items-center gap-3 px-5 h-16 shrink-0">
-          <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-indigo-500 to-emerald-500 flex items-center justify-center shrink-0">
+        <div className="flex items-center gap-3 mr-8">
+          <div className="w-9 h-9 rounded-xl gradient-indigo flex items-center justify-center">
             <TrendingUp className="w-5 h-5 text-white" />
           </div>
-          {!collapsed && (
-            <span className="text-base font-bold text-white tracking-tight whitespace-nowrap">
-              PropVision <span className="text-indigo-400">AI</span>
-            </span>
-          )}
+          <div>
+            <h1 className="text-base font-bold tracking-tight">
+              <span className="bg-gradient-to-r from-indigo-400 to-emerald-400 bg-clip-text text-transparent">
+                PropVision AI
+              </span>
+            </h1>
+          </div>
+          <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse-dot" />
         </div>
 
-        {/* Nav */}
-        <nav className="flex-1 px-3 mt-4 space-y-1">
+        <nav className="hidden lg:flex items-center gap-1 flex-1">
           {NAV_ITEMS.map((item) => {
             const isActive = currentPageName === item.page;
+            const showBadge = item.page === "Alerts" && unreadCount > 0;
             return (
               <Link
                 key={item.page}
                 to={createPageUrl(item.page)}
-                onClick={() => setMobileOpen(false)}
                 className={`
-                  flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium
-                  transition-all duration-200
+                  relative flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all
                   ${isActive
-                    ? "bg-indigo-500/15 text-indigo-400"
+                    ? "text-indigo-400 bg-indigo-500/10"
                     : "text-gray-400 hover:text-gray-200 hover:bg-white/[0.04]"
                   }
-                  ${collapsed ? "justify-center" : ""}
                 `}
               >
-                <item.icon className={`w-5 h-5 shrink-0 ${isActive ? "text-indigo-400" : ""}`} />
-                {!collapsed && <span>{item.name}</span>}
+                <item.icon className="w-4 h-4" />
+                <span>{item.name}</span>
+                {showBadge && (
+                  <span className="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-red-500 text-white text-[10px] font-bold flex items-center justify-center">
+                    {unreadCount}
+                  </span>
+                )}
               </Link>
             );
           })}
         </nav>
 
-        {/* Collapse toggle - desktop only */}
-        <button
-          onClick={() => setCollapsed(!collapsed)}
-          className="hidden lg:flex items-center justify-center h-12 border-t border-white/[0.06] text-gray-500 hover:text-gray-300 transition-colors"
-        >
-          {collapsed ? <ChevronRight className="w-4 h-4" /> : <ChevronLeft className="w-4 h-4" />}
-        </button>
-      </aside>
-
-      {/* Main content */}
-      <main className="flex-1 overflow-auto">
-        {/* Top bar */}
-        <header
-          className="sticky top-0 z-30 flex items-center justify-between h-16 px-4 lg:px-8"
-          style={{
-            background: "rgba(5,8,16,0.8)",
-            backdropFilter: "blur(16px)",
-            borderBottom: "1px solid rgba(255,255,255,0.04)",
-          }}
-        >
-          <div className="flex items-center gap-3">
-            <button
-              onClick={() => setMobileOpen(true)}
-              className="lg:hidden p-2 -ml-2 text-gray-400 hover:text-white"
+        <div className="ml-auto">
+          <DropdownMenu>
+            <DropdownMenuTrigger className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-white/[0.04] transition-colors">
+              <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-indigo-500 to-emerald-500 flex items-center justify-center">
+                <span className="text-white text-xs font-bold">
+                  {user?.full_name?.charAt(0) || "U"}
+                </span>
+              </div>
+              <span className="text-sm text-gray-300 hidden sm:inline">{user?.full_name || "User"}</span>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent
+              align="end"
+              className="w-48 bg-[#0d1223] border-white/[0.08]"
             >
-              <Menu className="w-5 h-5" />
-            </button>
-            <h1 className="text-lg font-semibold text-white">{currentPageName}</h1>
-          </div>
-        </header>
-
-        {/* Page content */}
-        <div className="p-4 lg:p-8">
-          {children}
+              <DropdownMenuItem
+                onClick={() => navigate(createPageUrl("Settings"))}
+                className="text-gray-300 focus:bg-white/[0.06] focus:text-white cursor-pointer"
+              >
+                <SettingsIcon className="w-4 h-4 mr-2" />
+                Settings
+              </DropdownMenuItem>
+              <DropdownMenuSeparator className="bg-white/[0.06]" />
+              <DropdownMenuItem
+                onClick={handleLogout}
+                className="text-gray-300 focus:bg-white/[0.06] focus:text-white cursor-pointer"
+              >
+                <LogOut className="w-4 h-4 mr-2" />
+                Sign Out
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
+      </header>
+
+      {/* Page content */}
+      <main className="flex-1 overflow-auto">
+        {children}
       </main>
+
+      {/* Mobile bottom nav */}
+      <nav
+        className="lg:hidden h-16 border-t flex items-center justify-around px-2"
+        style={{
+          background: "rgba(13,18,35,0.95)",
+          backdropFilter: "blur(16px)",
+          borderColor: "rgba(255,255,255,0.06)",
+        }}
+      >
+        {NAV_ITEMS.map((item) => {
+          const isActive = currentPageName === item.page;
+          const showBadge = item.page === "Alerts" && unreadCount > 0;
+          return (
+            <Link
+              key={item.page}
+              to={createPageUrl(item.page)}
+              className={`relative flex flex-col items-center gap-1 px-3 py-2 rounded-lg transition-all ${
+                isActive ? "text-indigo-400" : "text-gray-500"
+              }`}
+            >
+              <item.icon className="w-5 h-5" />
+              <span className="text-[10px] font-medium">{item.name}</span>
+              {showBadge && (
+                <span className="absolute top-0 right-0 w-4 h-4 rounded-full bg-red-500 text-white text-[8px] font-bold flex items-center justify-center">
+                  {unreadCount}
+                </span>
+              )}
+            </Link>
+          );
+        })}
+      </nav>
     </div>
   );
 }
