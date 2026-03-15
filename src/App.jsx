@@ -1,21 +1,19 @@
 import { Toaster } from "@/components/ui/toaster"
 import { QueryClientProvider } from '@tanstack/react-query'
 import { queryClientInstance } from '@/lib/query-client'
-import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
+import { pagesConfig } from './pages.config'
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import PageNotFound from './lib/PageNotFound';
 import { AuthProvider, useAuth } from '@/lib/AuthContext';
 import UserNotRegisteredError from '@/components/UserNotRegisteredError';
-import Layout from './Layout';
-import Discover from './pages/Discover';
-import SuburbIntelligence from './pages/SuburbIntelligence';
-import Portfolio from './pages/Portfolio';
-import Alerts from './pages/Alerts';
-import Settings from './pages/Settings';
-import PropertyDetail from './pages/PropertyDetail';
-import Onboarding from './pages/Onboarding';
 
-const LayoutWrapper = ({ children, currentPageName }) => 
-  <Layout currentPageName={currentPageName}>{children}</Layout>;
+const { Pages, Layout, mainPage } = pagesConfig;
+const mainPageKey = mainPage ?? Object.keys(Pages)[0];
+const MainPage = mainPageKey ? Pages[mainPageKey] : <></>;
+
+const LayoutWrapper = ({ children, currentPageName }) => Layout ?
+  <Layout currentPageName={currentPageName}>{children}</Layout>
+  : <>{children}</>;
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -43,14 +41,22 @@ const AuthenticatedApp = () => {
   // Render the main app
   return (
     <Routes>
-      <Route path="/" element={<Navigate to="/Discover" replace />} />
-      <Route path="/Onboarding" element={<Onboarding />} />
-      <Route path="/Discover" element={<LayoutWrapper currentPageName="Discover"><Discover /></LayoutWrapper>} />
-      <Route path="/SuburbIntelligence" element={<LayoutWrapper currentPageName="SuburbIntelligence"><SuburbIntelligence /></LayoutWrapper>} />
-      <Route path="/Portfolio" element={<LayoutWrapper currentPageName="Portfolio"><Portfolio /></LayoutWrapper>} />
-      <Route path="/Alerts" element={<LayoutWrapper currentPageName="Alerts"><Alerts /></LayoutWrapper>} />
-      <Route path="/Settings" element={<LayoutWrapper currentPageName="Settings"><Settings /></LayoutWrapper>} />
-      <Route path="/PropertyDetail/:id" element={<LayoutWrapper currentPageName="PropertyDetail"><PropertyDetail /></LayoutWrapper>} />
+      <Route path="/" element={
+        <LayoutWrapper currentPageName={mainPageKey}>
+          <MainPage />
+        </LayoutWrapper>
+      } />
+      {Object.entries(Pages).map(([path, Page]) => (
+        <Route
+          key={path}
+          path={`/${path}`}
+          element={
+            <LayoutWrapper currentPageName={path}>
+              <Page />
+            </LayoutWrapper>
+          }
+        />
+      ))}
       <Route path="*" element={<PageNotFound />} />
     </Routes>
   );

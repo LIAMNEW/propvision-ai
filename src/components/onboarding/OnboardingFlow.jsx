@@ -3,34 +3,32 @@ import { base44 } from "@/api/base44Client";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, CheckCircle2 } from "lucide-react";
 import { motion } from "framer-motion";
-import { useNavigate } from "react-router-dom";
 
 const STEPS = [
   {
-    title: "Which states interest you?",
-    field: "preferred_states",
-    multi: true,
-    options: ["QLD", "NSW", "VIC", "WA", "SA", "TAS", "ACT", "NT"],
+    title: "What describes you best?",
+    options: ["Investor", "First-Time", "Buyer's Agent"],
+    field: "investor_role",
   },
   {
     title: "What's your budget range?",
+    options: ["Under $500K", "$500K-$800K", "$800K-$1.5M", "$1.5M+"],
     field: "budget_range",
-    options: ["$300K-$600K", "$600K-$1M", "$1M-$1.5M", "$1.5M+"],
   },
   {
-    title: "Property type preference?",
-    field: "property_type_pref",
-    options: ["House", "Apartment", "Both"],
+    title: "Which states interest you?",
+    options: ["NSW", "VIC", "QLD", "WA", "SA", "TAS", "ACT", "NT"],
+    field: "preferred_states",
+    multi: true,
   },
   {
     title: "What's your risk appetite?",
-    field: "risk_appetite",
     options: ["Conservative", "Balanced", "Growth-Focused"],
+    field: "risk_appetite",
   },
 ];
 
-export default function OnboardingFlow() {
-  const navigate = useNavigate();
+export default function OnboardingFlow({ onComplete }) {
   const [step, setStep] = useState(0);
   const [data, setData] = useState({});
   const [loading, setLoading] = useState(false);
@@ -58,7 +56,7 @@ export default function OnboardingFlow() {
       setLoading(true);
       try {
         await base44.auth.updateMe({ ...data, onboarding_complete: true });
-        navigate("/Discover");
+        onComplete();
       } catch (err) {
         console.error(err);
         setLoading(false);
