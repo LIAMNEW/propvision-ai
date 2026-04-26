@@ -5,7 +5,7 @@ import { base44 } from "@/api/base44Client";
 import { useQuery } from "@tanstack/react-query";
 import {
   Compass, LineChart, Map, MapPin, Briefcase, Bell, Settings as SettingsIcon,
-  LogOut, User as UserIcon, TrendingUp
+  LogOut, User as UserIcon, TrendingUp, GitCompare, Calculator, TrendingDown
 } from "lucide-react";
 import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator
@@ -16,8 +16,11 @@ const NAV_ITEMS = [
   { name: "Intelligence", icon: LineChart, page: "Intelligence" },
   { name: "Map", icon: Map, page: "Map" },
   { name: "Suburbs", icon: MapPin, page: "Suburbs" },
+  { name: "Compare", icon: GitCompare, page: "SuburbCompare" },
   { name: "Portfolio", icon: Briefcase, page: "Portfolio" },
   { name: "Alerts", icon: Bell, page: "Alerts" },
+  { name: "Mortgage", icon: Calculator, page: "MortgageCalculator" },
+  { name: "Depreciation", icon: TrendingDown, page: "DepreciationCalculator" },
 ];
 
 export default function Layout({ children, currentPageName }) {

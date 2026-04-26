@@ -54,6 +54,9 @@ import Suburbs from './pages/Suburbs';
 import Intelligence from './pages/Intelligence';
 import Map from './pages/Map';
 import Settings from './pages/Settings';
+import SuburbCompare from './pages/SuburbCompare';
+import MortgageCalculator from './pages/MortgageCalculator';
+import DepreciationCalculator from './pages/DepreciationCalculator';
 import __Layout from './Layout.jsx';
 
 
@@ -65,6 +68,9 @@ export const PAGES = {
     "Intelligence": Intelligence,
     "Map": Map,
     "Settings": Settings,
+    "SuburbCompare": SuburbCompare,
+    "MortgageCalculator": MortgageCalculator,
+    "DepreciationCalculator": DepreciationCalculator,
 }
 
 export const pagesConfig = {
