@@ -10,6 +10,7 @@ import {
 import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator
 } from "@/components/ui/dropdown-menu";
+import { ChevronDown } from "lucide-react";
 
 const NAV_ITEMS = [
   { name: "Discover", icon: Compass, page: "Discover" },
@@ -19,8 +20,11 @@ const NAV_ITEMS = [
   { name: "Compare", icon: GitCompare, page: "SuburbCompare" },
   { name: "Portfolio", icon: Briefcase, page: "Portfolio" },
   { name: "Alerts", icon: Bell, page: "Alerts" },
-  { name: "Mortgage", icon: Calculator, page: "MortgageCalculator" },
-  { name: "Depreciation", icon: TrendingDown, page: "DepreciationCalculator" },
+];
+
+const TOOLS_ITEMS = [
+  { name: "Mortgage Calculator", icon: Calculator, page: "MortgageCalculator" },
+  { name: "Depreciation Schedule", icon: TrendingDown, page: "DepreciationCalculator" },
 ];
 
 export default function Layout({ children, currentPageName }) {
@@ -95,6 +99,29 @@ export default function Layout({ children, currentPageName }) {
           })}
         </nav>
 
+        {/* Tools dropdown */}
+        <DropdownMenu>
+          <DropdownMenuTrigger className={`hidden lg:flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-medium transition-all mr-1 ${
+            TOOLS_ITEMS.some(t => t.page === currentPageName)
+              ? "text-indigo-400 bg-indigo-500/10"
+              : "text-gray-400 hover:text-gray-200 hover:bg-white/[0.04]"
+          }`}>
+            <Calculator className="w-4 h-4" />
+            <span>Tools</span>
+            <ChevronDown className="w-3 h-3" />
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="bg-[#0d1223] border-white/[0.08] w-52">
+            {TOOLS_ITEMS.map((item) => (
+              <DropdownMenuItem key={item.page} asChild className="text-gray-300 focus:bg-white/[0.06] focus:text-white cursor-pointer">
+                <Link to={createPageUrl(item.page)} className="flex items-center gap-2">
+                  <item.icon className="w-4 h-4" />
+                  {item.name}
+                </Link>
+              </DropdownMenuItem>
+            ))}
+          </DropdownMenuContent>
+        </DropdownMenu>
+
         <div className="ml-auto">
           <DropdownMenu>
             <DropdownMenuTrigger className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-white/[0.04] transition-colors">
@@ -134,7 +161,7 @@ export default function Layout({ children, currentPageName }) {
         {children}
       </main>
 
-      {/* Mobile bottom nav */}
+      {/* Mobile bottom nav — show first 6 core items */}
       <nav
         className="lg:hidden h-16 border-t flex items-center justify-around px-2"
         style={{
@@ -143,19 +170,19 @@ export default function Layout({ children, currentPageName }) {
           borderColor: "rgba(255,255,255,0.06)",
         }}
       >
-        {NAV_ITEMS.map((item) => {
+        {NAV_ITEMS.slice(0, 6).map((item) => {
           const isActive = currentPageName === item.page;
           const showBadge = item.page === "Alerts" && unreadCount > 0;
           return (
             <Link
               key={item.page}
               to={createPageUrl(item.page)}
-              className={`relative flex flex-col items-center gap-1 px-3 py-2 rounded-lg transition-all ${
+              className={`relative flex flex-col items-center gap-1 px-2 py-2 rounded-lg transition-all ${
                 isActive ? "text-indigo-400" : "text-gray-500"
               }`}
             >
               <item.icon className="w-5 h-5" />
-              <span className="text-[10px] font-medium">{item.name}</span>
+              <span className="text-[9px] font-medium">{item.name}</span>
               {showBadge && (
                 <span className="absolute top-0 right-0 w-4 h-4 rounded-full bg-red-500 text-white text-[8px] font-bold flex items-center justify-center">
                   {unreadCount}

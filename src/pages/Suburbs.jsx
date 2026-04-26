@@ -64,14 +64,37 @@ export default function Suburbs() {
 
                 <div className="grid grid-cols-4 gap-3 mb-4">
                   {[
-                    { label: "Yield", value: `${suburb.gross_rental_yield?.toFixed(1) || "—"}%` },
-                    { label: "Growth", value: `${suburb.population_growth?.toFixed(1) || "—"}%` },
-                    { label: "Income", value: suburb.household_income ? `$${(suburb.household_income / 1000).toFixed(0)}k` : "—" },
-                    { label: "Infra", value: suburb.infrastructure_score || "—" },
+                    { label: "Yield", value: `${suburb.gross_rental_yield?.toFixed(1) || "—"}%`, color: "text-emerald-400" },
+                    { label: "Ann. Growth", value: `${suburb.annual_capital_growth?.toFixed(1) || "—"}%`, color: "text-indigo-400" },
+                    { label: "Vacancy", value: `${suburb.vacancy_rate?.toFixed(2) || "—"}%`, color: "text-amber-400" },
+                    { label: "HH Income", value: suburb.median_household_income ? `$${(suburb.median_household_income / 1000).toFixed(0)}k` : "—", color: "text-blue-400" },
                   ].map((stat, i) => (
-                    <div key={i} className="text-center">
+                    <div key={i} className="text-center p-2 rounded-lg" style={{ background: "rgba(255,255,255,0.02)" }}>
                       <p className="text-[9px] text-gray-500 uppercase mb-1">{stat.label}</p>
-                      <p className="text-xs font-semibold text-gray-300">{stat.value}</p>
+                      <p className={`text-xs font-semibold ${stat.color}`}>{stat.value}</p>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Progress bars */}
+                <div className="space-y-2 mb-4">
+                  {[
+                    { label: "Infrastructure", value: suburb.infrastructure_score, color: "#6366f1" },
+                    { label: "Schools", value: suburb.schools_score, color: "#10b981" },
+                    { label: "Transport", value: suburb.transport_score, color: "#3b82f6" },
+                    { label: "Lifestyle", value: suburb.lifestyle_score, color: "#f59e0b" },
+                  ].map((bar) => (
+                    <div key={bar.label}>
+                      <div className="flex justify-between text-[9px] text-gray-500 mb-1">
+                        <span>{bar.label}</span>
+                        <span>{bar.value ?? "—"}</span>
+                      </div>
+                      <div className="h-1.5 rounded-full bg-white/[0.06]">
+                        <div
+                          className="h-full rounded-full"
+                          style={{ width: `${bar.value || 0}%`, background: bar.color }}
+                        />
+                      </div>
                     </div>
                   ))}
                 </div>
@@ -85,7 +108,12 @@ export default function Suburbs() {
                   </div>
                 )}
 
-                <p className="text-[9px] text-gray-600 text-right">ABS Census 2021</p>
+                <div className="flex items-center justify-between">
+                  {suburb.median_weekly_rent && (
+                    <p className="text-[9px] text-gray-600">Median rent ${suburb.median_weekly_rent}/wk</p>
+                  )}
+                  <p className="text-[9px] text-gray-600 ml-auto">ABS Census 2021</p>
+                </div>
               </div>
             );
           })
