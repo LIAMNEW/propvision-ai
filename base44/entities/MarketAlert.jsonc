@@ -1,0 +1,52 @@
+{
+  "name": "MarketAlert",
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string",
+      "description": "Alert title"
+    },
+    "message": {
+      "type": "string",
+      "description": "Alert message body"
+    },
+    "alert_type": {
+      "type": "string",
+      "enum": [
+        "price_drop",
+        "new_listing",
+        "yield_change",
+        "market_update",
+        "suburb_alert"
+      ],
+      "description": "Type of alert"
+    },
+    "severity": {
+      "type": "string",
+      "enum": [
+        "info",
+        "warning",
+        "critical"
+      ],
+      "description": "Alert severity"
+    },
+    "related_suburb": {
+      "type": "string",
+      "description": "Related suburb if applicable"
+    },
+    "related_state": {
+      "type": "string",
+      "description": "Related state if applicable"
+    },
+    "is_read": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether the alert has been read"
+    }
+  },
+  "required": [
+    "title",
+    "message",
+    "alert_type"
+  ]
+}

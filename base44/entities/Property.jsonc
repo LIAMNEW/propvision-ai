@@ -1,0 +1,106 @@
+{
+  "name": "Property",
+  "type": "object",
+  "properties": {
+    "address": {
+      "type": "string"
+    },
+    "suburb": {
+      "type": "string"
+    },
+    "state": {
+      "type": "string",
+      "enum": [
+        "NSW",
+        "VIC",
+        "QLD",
+        "WA",
+        "SA",
+        "TAS",
+        "ACT",
+        "NT"
+      ]
+    },
+    "postcode": {
+      "type": "string"
+    },
+    "price": {
+      "type": "number"
+    },
+    "bedrooms": {
+      "type": "number"
+    },
+    "bathrooms": {
+      "type": "number"
+    },
+    "car_spaces": {
+      "type": "number"
+    },
+    "property_type": {
+      "type": "string",
+      "enum": [
+        "House",
+        "Apartment",
+        "Townhouse",
+        "Unit",
+        "Land"
+      ]
+    },
+    "investment_score": {
+      "type": "string",
+      "enum": [
+        "A+",
+        "A",
+        "B+",
+        "B",
+        "C",
+        "D",
+        "F"
+      ]
+    },
+    "rental_yield": {
+      "type": "number"
+    },
+    "capital_growth_5yr": {
+      "type": "number"
+    },
+    "vacancy_rate": {
+      "type": "number"
+    },
+    "weekly_rent": {
+      "type": "number"
+    },
+    "weekly_cashflow": {
+      "type": "number"
+    },
+    "risk_level": {
+      "type": "string",
+      "enum": [
+        "Low",
+        "Medium",
+        "High"
+      ]
+    },
+    "ai_summary": {
+      "type": "string"
+    },
+    "ai_analysis": {
+      "type": "string"
+    },
+    "image_url": {
+      "type": "string"
+    },
+    "latitude": {
+      "type": "number"
+    },
+    "longitude": {
+      "type": "number"
+    }
+  },
+  "required": [
+    "address",
+    "suburb",
+    "state",
+    "price"
+  ]
+}

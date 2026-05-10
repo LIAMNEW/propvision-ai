@@ -1,0 +1,68 @@
+{
+  "name": "SuburbInsight",
+  "type": "object",
+  "properties": {
+    "suburb": {
+      "type": "string"
+    },
+    "state": {
+      "type": "string",
+      "enum": [
+        "NSW",
+        "VIC",
+        "QLD",
+        "WA",
+        "SA",
+        "TAS",
+        "ACT",
+        "NT"
+      ]
+    },
+    "postcode": {
+      "type": "string"
+    },
+    "population": {
+      "type": "number"
+    },
+    "median_house_price": {
+      "type": "number"
+    },
+    "gross_rental_yield": {
+      "type": "number"
+    },
+    "population_growth": {
+      "type": "number"
+    },
+    "suburb_score": {
+      "type": "number"
+    },
+    "household_income": {
+      "type": "number"
+    },
+    "infrastructure_score": {
+      "type": "number"
+    },
+    "schools_score": {
+      "type": "number"
+    },
+    "transport_score": {
+      "type": "number"
+    },
+    "lifestyle_score": {
+      "type": "number"
+    },
+    "ai_suburb_summary": {
+      "type": "string"
+    },
+    "latitude": {
+      "type": "number"
+    },
+    "longitude": {
+      "type": "number"
+    }
+  },
+  "required": [
+    "suburb",
+    "state"
+  ]
+}

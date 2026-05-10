@@ -1,0 +1,17 @@
+{
+  "name": "SavedProperty",
+  "type": "object",
+  "properties": {
+    "property_id": {
+      "type": "string",
+      "description": "ID of the saved property"
+    },
+    "notes": {
+      "type": "string",
+      "description": "User notes about this property"
+    }
+  },
+  "required": [
+    "property_id"
+  ]
+}

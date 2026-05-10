@@ -1,0 +1,96 @@
+{
+  "name": "User",
+  "type": "object",
+  "properties": {
+    "role": {
+      "type": "string",
+      "enum": [
+        "admin",
+        "user"
+      ],
+      "default": "user"
+    },
+    "onboarding_complete": {
+      "type": "boolean",
+      "default": false
+    },
+    "investor_role": {
+      "type": "string",
+      "enum": [
+        "Investor",
+        "First-Time",
+        "Buyer's Agent"
+      ]
+    },
+    "budget_range": {
+      "type": "string",
+      "enum": [
+        "Under $500K",
+        "$500K-$800K",
+        "$800K-$1.5M",
+        "$1.5M+"
+      ]
+    },
+    "preferred_states": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "risk_appetite": {
+      "type": "string",
+      "enum": [
+        "Conservative",
+        "Balanced",
+        "Growth-Focused"
+      ]
+    },
+    "notifications_telegram": {
+      "type": "boolean",
+      "default": false
+    },
+    "telegram_chat_id": {
+      "type": "string"
+    },
+    "notifications_whatsapp": {
+      "type": "boolean",
+      "default": false
+    },
+    "whatsapp_number": {
+      "type": "string"
+    },
+    "notify_score_changes": {
+      "type": "boolean",
+      "default": true
+    },
+    "notify_price_drops": {
+      "type": "boolean",
+      "default": true
+    },
+    "notify_new_listings": {
+      "type": "boolean",
+      "default": true
+    },
+    "notify_market_updates": {
+      "type": "boolean",
+      "default": true
+    },
+    "notify_frequency": {
+      "type": "string",
+      "enum": [
+        "Instant",
+        "Daily",
+        "Weekly"
+      ],
+      "default": "Instant"
+    }
+  },
+  "required": [
+    "investor_role",
+    "budget_range",
+    "preferred_states",
+    "risk_appetite",
+    "telegram_chat_id",
+    "whatsapp_number"
+  ]
+}

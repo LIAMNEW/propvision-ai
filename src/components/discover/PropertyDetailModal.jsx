@@ -1,7 +1,8 @@
-import React from "react";
+import React, { useState } from "react";
 import { X, Bed, Bath, Car, Heart } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
+import LocalInsightsTab from "./LocalInsightsTab";
 
 const SCORE_CONFIG = {
   "A+": "gradient-emerald",
@@ -14,6 +15,7 @@ const SCORE_CONFIG = {
 };
 
 export default function PropertyDetailModal({ property, isSaved, onToggleSave, onClose }) {
+  const [activeTab, setActiveTab] = useState("overview");
   if (!property) return null;
 
   const scoreClass = SCORE_CONFIG[property.investment_score] || "gradient-amber";
@@ -82,40 +84,70 @@ export default function PropertyDetailModal({ property, isSaved, onToggleSave, o
               </span>
             </div>
 
-            {/* Stats Cards */}
-            <div className="grid grid-cols-4 gap-3 mt-6">
+            {/* Tabs */}
+            <div className="flex gap-1 mt-6 p-1 rounded-xl" style={{ background: "rgba(255,255,255,0.04)" }}>
               {[
-                { label: "Rental Yield", value: `${property.rental_yield?.toFixed(1)}%`, color: "emerald" },
-                { label: "5yr Growth", value: `${property.capital_growth_5yr?.toFixed(1)}%`, color: "indigo" },
-                {
-                  label: "Weekly Cash Flow",
-                  value: `${isPositive ? "+" : ""}$${Math.abs(cashflow).toFixed(0)}`,
-                  color: isPositive ? "emerald" : "red",
-                },
-                { label: "Vacancy Rate", value: `${property.vacancy_rate?.toFixed(1)}%`, color: "amber" },
-              ].map((stat, i) => (
-                <div
-                  key={i}
-                  className="p-4 rounded-xl text-center"
-                  style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.06)" }}
+                { id: "overview", label: "Overview" },
+                { id: "insights", label: "Local Insights" },
+              ].map((tab) => (
+                <button
+                  key={tab.id}
+                  onClick={() => setActiveTab(tab.id)}
+                  className={`flex-1 py-2 rounded-lg text-sm font-medium transition-all ${
+                    activeTab === tab.id
+                      ? "bg-indigo-600 text-white"
+                      : "text-gray-400 hover:text-gray-200"
+                  }`}
                 >
-                  <p className="text-xs text-gray-500 mb-1">{stat.label}</p>
-                  <p className={`text-lg font-bold text-${stat.color}-400`}>{stat.value}</p>
-                </div>
+                  {tab.label}
+                </button>
               ))}
             </div>
 
-            {/* AI Analysis */}
-            {property.ai_analysis && (
-              <div
-                className="mt-6 p-4 rounded-xl"
-                style={{
-                  background: "linear-gradient(135deg, rgba(99,102,241,0.15) 0%, rgba(139,92,246,0.15) 100%)",
-                  border: "1px solid rgba(99,102,241,0.2)",
-                }}
-              >
-                <h3 className="text-sm font-semibold text-indigo-400 mb-2">AI Investment Analysis</h3>
-                <p className="text-sm text-gray-300 leading-relaxed">{property.ai_analysis}</p>
+            {activeTab === "overview" && (
+              <>
+                {/* Stats Cards */}
+                <div className="grid grid-cols-4 gap-3 mt-5">
+                  {[
+                    { label: "Rental Yield", value: `${property.rental_yield?.toFixed(1)}%`, color: "emerald" },
+                    { label: "5yr Growth", value: `${property.capital_growth_5yr?.toFixed(1)}%`, color: "indigo" },
+                    {
+                      label: "Weekly Cash Flow",
+                      value: `${isPositive ? "+" : ""}$${Math.abs(cashflow).toFixed(0)}`,
+                      color: isPositive ? "emerald" : "red",
+                    },
+                    { label: "Vacancy Rate", value: `${property.vacancy_rate?.toFixed(1)}%`, color: "amber" },
+                  ].map((stat, i) => (
+                    <div
+                      key={i}
+                      className="p-4 rounded-xl text-center"
+                      style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.06)" }}
+                    >
+                      <p className="text-xs text-gray-500 mb-1">{stat.label}</p>
+                      <p className={`text-lg font-bold text-${stat.color}-400`}>{stat.value}</p>
+                    </div>
+                  ))}
+                </div>
+
+                {/* AI Analysis */}
+                {property.ai_analysis && (
+                  <div
+                    className="mt-5 p-4 rounded-xl"
+                    style={{
+                      background: "linear-gradient(135deg, rgba(99,102,241,0.15) 0%, rgba(139,92,246,0.15) 100%)",
+                      border: "1px solid rgba(99,102,241,0.2)",
+                    }}
+                  >
+                    <h3 className="text-sm font-semibold text-indigo-400 mb-2">AI Investment Analysis</h3>
+                    <p className="text-sm text-gray-300 leading-relaxed">{property.ai_analysis}</p>
+                  </div>
+                )}
+              </>
+            )}
+
+            {activeTab === "insights" && (
+              <div className="mt-5">
+                <LocalInsightsTab property={property} />
               </div>
             )}
 
