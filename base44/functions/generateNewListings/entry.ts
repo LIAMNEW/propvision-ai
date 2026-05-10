@@ -20,7 +20,7 @@ Deno.serve(async (req) => {
 
     // Use AI to generate 3-5 new realistic Australian investment property listings
     const result = await base44.asServiceRole.integrations.Core.InvokeLLM({
-      prompt: `You are a PropVision AI data engine for Australian real estate investment. Generate exactly 4 new realistic Australian investment property listings for April 2026.
+      prompt: `You are a PropVision AI data engine for Australian real estate investment. Generate exactly 4 new realistic Australian investment property listings currently FOR SALE in May 2026.
 
 Current market context:
 - RBA Cash Rate: 3.85% (Feb 2026 cut)
@@ -30,17 +30,18 @@ Current market context:
 - Olympics 2032 catalyst corridor: Woolloongabba, New Farm, South Brisbane, Paddington (QLD)
 
 Rules:
+- These are ACTIVE FOR SALE listings on the market RIGHT NOW
 - Focus on investment-grade suburbs in WA, QLD, SA, NSW, VIC
 - Mix of houses, apartments, townhouses
 - Price range: $420K–$2.1M
 - Yield range: 3.8%–7.5% (Perth/QLD/SA skew higher)
-- Generate unique addresses and realistic postcodes
+- Generate realistic Australian street addresses with real house numbers and street names
+- Use real suburb names and correct postcodes that actually exist in Australia
 - investment_score must be A+, A, B+, or B
-- Include compelling ai_summary (2-3 sentences about why it's a good investment)
-- Use real suburb names that exist in Australia
+- ai_summary must clearly describe the property features AND investment case (2-3 sentences, written as a real estate listing)
 - Do NOT use same suburb twice in one batch
-
-Return ONLY valid JSON array with exactly 4 properties.`,
+- listing_status should always be "For Sale"
+- listing_agent should be a realistic Australian real estate agency name`,
       response_json_schema: {
         type: "object",
         properties: {
@@ -78,24 +79,34 @@ Return ONLY valid JSON array with exactly 4 properties.`,
     const newProperties = result?.properties || [];
     const created = [];
 
-    // Assign stock property images by type
+    // Curated Australian residential property images by type
     const imagesByType = {
       House: [
-        "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=600&q=80",
-        "https://images.unsplash.com/photo-1568605114967-8130f3a36994?w=600&q=80",
-        "https://images.unsplash.com/photo-1570129477492-45c003edd2be?w=600&q=80",
-        "https://images.unsplash.com/photo-1583608205776-bfd35f0d9f83?w=600&q=80",
+        "https://images.unsplash.com/photo-1625602812206-5ec545ca1231?w=800&q=80", // Australian brick home
+        "https://images.unsplash.com/photo-1613977257363-707ba9348227?w=800&q=80", // modern Aus house
+        "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&q=80",   // single storey suburban
+        "https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=800&q=80", // double storey
+        "https://images.unsplash.com/photo-1576941089067-2de3c901e126?w=800&q=80", // neat suburban house
+        "https://images.unsplash.com/photo-1523217582562-09d0def993a6?w=800&q=80", // white brick house
       ],
       Apartment: [
-        "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=600&q=80",
-        "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=600&q=80",
+        "https://images.unsplash.com/photo-1486325212027-8081e485255e?w=800&q=80", // apartment building
+        "https://images.unsplash.com/photo-1460317442991-0ec209397118?w=800&q=80", // modern apartments
+        "https://images.unsplash.com/photo-1515263487990-61b07816b324?w=800&q=80", // apartment complex
+        "https://images.unsplash.com/photo-1493809842364-78817add7ffb?w=800&q=80", // apartment interior
       ],
       Townhouse: [
-        "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=600&q=80",
-        "https://images.unsplash.com/photo-1580587771525-78b9dba3b914?w=600&q=80",
+        "https://images.unsplash.com/photo-1605146769289-440113cc3d00?w=800&q=80", // row townhouses
+        "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=800&q=80", // modern townhouse
+        "https://images.unsplash.com/photo-1592595896616-c37162298647?w=800&q=80", // attached townhouse
       ],
       Unit: [
-        "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=600&q=80",
+        "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=800&q=80",   // unit block
+        "https://images.unsplash.com/photo-1467987506553-8f3916508521?w=800&q=80", // brick units
+      ],
+      Land: [
+        "https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=800&q=80", // land block
+        "https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=800&q=80",   // vacant land
       ],
     };
 

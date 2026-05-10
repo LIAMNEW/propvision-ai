@@ -37,11 +37,12 @@ export default function PropertyCard({ property, isSaved, onToggleSave, onClick 
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
 
-        {/* Score badge */}
-        <div className="absolute top-3 left-3">
-          <span
-            className={`${scoreClass} px-3 py-1 rounded-lg text-white text-xs font-bold shadow-lg`}
-          >
+        {/* For Sale badge */}
+        <div className="absolute top-3 left-3 flex items-center gap-2">
+          <span className="px-2.5 py-1 rounded-lg text-[10px] font-bold bg-white text-gray-900 shadow-lg uppercase tracking-wide">
+            For Sale
+          </span>
+          <span className={`${scoreClass} px-2.5 py-1 rounded-lg text-white text-xs font-bold shadow-lg`}>
             {property.investment_score || "C"}
           </span>
         </div>
