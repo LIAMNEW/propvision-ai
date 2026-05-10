@@ -3,6 +3,7 @@ import { X, Bed, Bath, Car, Heart } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import LocalInsightsTab from "./LocalInsightsTab";
+import { getPropertyImage } from "./propertyImages";
 
 const SCORE_CONFIG = {
   "A+": "gradient-emerald",
@@ -43,7 +44,7 @@ export default function PropertyDetailModal({ property, isSaved, onToggleSave, o
           {/* Header Image */}
           <div className="relative h-64">
             <img
-              src={property.image_url || "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&q=80"}
+              src={getPropertyImage(property)}
               alt={property.address}
               className="w-full h-full object-cover"
             />

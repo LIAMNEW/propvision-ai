@@ -1,6 +1,7 @@
 import React from "react";
 import { Bed, Bath, Car, Heart } from "lucide-react";
 import { motion } from "framer-motion";
+import { getPropertyImage } from "./propertyImages";
 
 const SCORE_CONFIG = {
   "A+": "gradient-emerald",
@@ -16,6 +17,7 @@ export default function PropertyCard({ property, isSaved, onToggleSave, onClick 
   const scoreClass = SCORE_CONFIG[property.investment_score] || "gradient-amber";
   const cashflow = property.weekly_cashflow || 0;
   const isPositive = cashflow >= 0;
+  const imageUrl = getPropertyImage(property);
 
   return (
     <motion.div
@@ -31,7 +33,7 @@ export default function PropertyCard({ property, isSaved, onToggleSave, onClick 
       {/* Image */}
       <div className="relative h-42 overflow-hidden">
         <img
-          src={property.image_url || "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=600&q=80"}
+          src={imageUrl}
           alt={property.address}
           className="w-full h-full object-cover"
         />
